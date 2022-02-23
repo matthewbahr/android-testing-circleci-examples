@@ -65,48 +65,4 @@ class TasksFragmentTest {
         ServiceLocator.resetRepository()
     }
 
-    @Test
-    fun clickAddTaskButton_navigateToAddEditFragment() {
-        // GIVEN - On the home screen
-        val scenario = launchFragmentInContainer<TasksFragment>(Bundle(), R.style.AppTheme)
-        val navController = mock(NavController::class.java)
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
-        }
-
-        // WHEN - Click on the "+" button
-        onView(withId(R.id.add_task_fab)).perform(click())
-
-        // THEN - Verify that we navigate to the add screen
-        verify(navController).navigate(
-            TasksFragmentDirections.actionTasksFragmentToAddEditTaskFragment(
-                null, getApplicationContext<Context>().getString(R.string.add_task)
-            )
-        )
-    }
-
-    @Test
-    fun clickTask_navigateToDetailFragmentOne() = runBlockingTest {
-        repository.saveTask(Task("TITLE1", "DESCRIPTION1", false, "id1"))
-        repository.saveTask(Task("TITLE2", "DESCRIPTION2", true, "id2"))
-
-        // GIVEN - On the home screen
-        val scenario = launchFragmentInContainer<TasksFragment>(Bundle(), R.style.AppTheme)
-        val navController = mock(NavController::class.java)
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
-        }
-
-        // WHEN - Click on the first list item
-        onView(withId(R.id.tasks_list))
-            .perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
-                hasDescendant(withText("TITLE1")), click()))
-
-
-        // THEN - Verify that we navigate to the first detail screen
-        verify(navController).navigate(
-            TasksFragmentDirections.actionTasksFragmentToTaskDetailFragment( "id1")
-        )
-    }
-
 }
